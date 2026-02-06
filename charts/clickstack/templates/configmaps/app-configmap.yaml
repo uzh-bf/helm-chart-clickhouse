@@ -12,7 +12,6 @@ data:
   HYPERDX_APP_PORT: "{{ .Values.hyperdx.appPort }}"
   HYPERDX_LOG_LEVEL: "{{ .Values.hyperdx.logLevel }}"
   MINER_API_URL: "http://{{ include "clickstack.fullname" . }}-miner:5123"
-  MONGO_URI: "{{ tpl .Values.hyperdx.mongoUri . }}"
   OTEL_SERVICE_NAME: "hdx-oss-api"
   USAGE_STATS_ENABLED: "{{ .Values.hyperdx.usageStatsEnabled }}"
   RUN_SCHEDULED_TASKS_EXTERNALLY: "{{ .Values.tasks.enabled }}"
