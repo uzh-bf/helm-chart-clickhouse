@@ -137,7 +137,7 @@ tests:
         enabled: true
       hyperdx:
         image:
-          tag: "2.8.0"
+          tag: "2.7.1"
     asserts:
       - equal:
           path: spec.jobTemplate.spec.template.spec.containers[0].command
