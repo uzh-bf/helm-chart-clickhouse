@@ -99,6 +99,18 @@ spec:
               mountPath: /var/lib/clickhouse
             - name: logs
               mountPath: /var/log/clickhouse-server
+            {{- range $key, $value := .Values.clickhouse.extraConfig }}
+            - name: extra-config
+              mountPath: /etc/clickhouse-server/config.d/{{ $key }}
+              subPath: {{ $key }}
+            {{- end }}
+            {{- if .Values.clickhouse.extraConfigFromSecret.secretName }}
+            {{- range .Values.clickhouse.extraConfigFromSecret.keys }}
+            - name: extra-config-secret
+              mountPath: /etc/clickhouse-server/config.d/{{ . }}
+              subPath: {{ . }}
+            {{- end }}
+            {{- end }}
       volumes:
         - name: config
           configMap:
@@ -120,6 +132,16 @@ spec:
           {{- else }}
           emptyDir: {}
           {{- end }}
+        {{- if .Values.clickhouse.extraConfig }}
+        - name: extra-config
+          configMap:
+            name: {{ include "clickstack.fullname" . }}-clickhouse-extra-config
+        {{- end }}
+        {{- if .Values.clickhouse.extraConfigFromSecret.secretName }}
+        - name: extra-config-secret
+          secret:
+            secretName: {{ .Values.clickhouse.extraConfigFromSecret.secretName }}
+        {{- end }}
 ---
 apiVersion: v1
 kind: Service
@@ -171,6 +193,21 @@ metadata:
 data:
   users.xml: |-
     {{- tpl (.Files.Get "data/users.xml") . | nindent 4 }}
+
+{{- if .Values.clickhouse.extraConfig }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "clickstack.fullname" . }}-clickhouse-extra-config
+  labels:
+    {{- include "clickstack.labels" . | nindent 4 }}
+data:
+  {{- range $key, $value := .Values.clickhouse.extraConfig }}
+  {{ $key }}: |-
+    {{- $value | nindent 4 }}
+  {{- end }}
+{{- end }}
 
 {{- if .Values.clickhouse.persistence.enabled }}
 ---

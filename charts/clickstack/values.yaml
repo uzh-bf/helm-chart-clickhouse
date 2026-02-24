@@ -351,6 +351,30 @@ clickhouse:
     enabled: true
     port: 9363
     endpoint: "/metrics"
+  # Extra ClickHouse config files mounted to /etc/clickhouse-server/config.d/
+  # Each key becomes a filename, value is the XML content
+  # Example for Azure Blob Storage:
+  # extraConfig:
+  #   azuredisk.xml: |
+  #     <clickhouse>
+  #       <merge_tree>
+  #         <storage_policy>blob_storage_disk</storage_policy>
+  #       </merge_tree>
+  #       <storage_configuration>
+  #         ...
+  #       </storage_configuration>
+  #     </clickhouse>
+  extraConfig: {}
+
+  # Mount config files from an existing Secret into /etc/clickhouse-server/config.d/
+  # Use this for configs containing sensitive values (e.g. Azure account_key)
+  # The secret must already exist; keys listed here are mounted as files
+  # extraConfigFromSecret:
+  #   secretName: "my-clickhouse-extra-config"
+  #   keys:
+  #     - azuredisk.xml
+  extraConfigFromSecret: {}
+
   config:
     users:
       appUserPassword: "hyperdx"
