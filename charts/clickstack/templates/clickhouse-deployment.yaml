@@ -7,7 +7,7 @@ metadata:
     {{- include "clickstack.labels" . | nindent 4 }}
     app: clickhouse
 spec:
-  replicas: 1
+  replicas: {{ hasKey .Values.clickhouse "replicas" | ternary .Values.clickhouse.replicas 1 }}
   strategy:
     type: Recreate
   selector:
