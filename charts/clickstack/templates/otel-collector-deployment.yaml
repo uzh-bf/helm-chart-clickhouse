@@ -7,7 +7,7 @@ metadata:
     {{- include "clickstack.labels" . | nindent 4 }}
     app: otel-collector
 spec:
-  replicas: {{ .Values.otel.replicas | default 1 }}
+  replicas: {{ hasKey .Values.otel "replicas" | ternary .Values.otel.replicas 1 }}
   selector:
     matchLabels:
       {{- include "clickstack.selectorLabels" . | nindent 6 }}

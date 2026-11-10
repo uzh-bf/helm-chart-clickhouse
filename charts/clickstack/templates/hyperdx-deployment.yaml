@@ -11,7 +11,7 @@ metadata:
     {{- end -}}
     {{- end }}
 spec:
-  replicas: {{ .Values.hyperdx.replicas | default 1 }}
+  replicas: {{ hasKey .Values.hyperdx "replicas" | ternary .Values.hyperdx.replicas 1 }}
   selector:
     matchLabels:
       {{- include "clickstack.selectorLabels" . | nindent 6 }}
